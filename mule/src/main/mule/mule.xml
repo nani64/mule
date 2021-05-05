@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="fdd630d2-d251-4ce1-83d1-006658b2261c" >
+		<sftp:connection host="192.168.1.114" username="tester" password="password" />
+	</sftp:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="67fe8ceb-0065-4e4a-ad06-a62f611157a9" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="03e85ff1-ca3b-4331-9664-90f26ef30202" />
+	<file:config name="File_Config1" doc:name="File Config" doc:id="cb2607fb-b3d5-4b5f-8d6d-af6da73243ba" >
+		<file:connection workingDir="C:\Users\manid\OneDrive\Desktop\example\batch job output" />
+	</file:config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="79664072-11ff-4ef1-b8eb-decb318036b8" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="MUle@123" database="new" />
+	</db:config>
+	<sftp:config name="SFTP_Config1" doc:name="SFTP Config" doc:id="816f66c2-9470-423c-b70f-9a259b1d5a8e" >
+		<sftp:connection host="192.168.1.114" username="tester" password="password" />
+	</sftp:config>
+	<sftp:config name="SFTP_Config2" doc:name="SFTP Config" doc:id="2c0ecbc9-1324-4877-aeda-49f6dc0cce1c" >
+		<sftp:connection host="192.168.1.114" username="tester" password="password" />
+	</sftp:config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="edf51b3d-d3f9-4ed9-82d0-6e66908689cf" >
+		<jms:active-mq-connection >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<jms:config name="JMS_Config1" doc:name="JMS Config" doc:id="14b3fdc9-cbc8-4a9a-bda4-e52295c571b4" >
+		<jms:active-mq-connection >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="muleFlow" doc:id="f1b46e30-1eee-4c02-8eb5-0e203ebc44ef" >
+		<http:listener doc:name="Listener" doc:id="2c868d91-fb05-4d2f-807c-fee3f3780f03" config-ref="HTTP_Listener_config" path="hi"/>
+		<file:read doc:name="Read" doc:id="f2e7579d-0f39-4ee0-8191-c6c311fc3680" config-ref="File_Config" path="C:\Users\manid\OneDrive\Desktop\example\exp-2.txt"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c5f39e65-2c26-4622-aba8-4e031864dea2" message="start :::::::::::::::::::::#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="0930e9c3-f875-4e14-8cd0-bddde5fc921e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<batch:job jobName="muleBatch_Job" doc:id="48382566-f3a1-4975-a167-03a941e8edfe" blockSize="2">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="eaffeed2-3f41-416b-8e99-a82e30c4c21d" >
+					<logger level="INFO" doc:name="Logger" doc:id="a5102d7a-205e-44a7-a1df-c59137c6c757" message="batch ::::::::::::::::#[payload]"/>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="28dc4612-b79c-4002-b250-7d0e787f7b53" size="2">
+						<ee:transform doc:name="Transform Message" doc:id="61a7631a-21a6-475f-a68d-a258248bf87a" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<file:write doc:name="Write" doc:id="06c5d5c2-e9fb-43e8-9d97-b5fdf869e7b0" config-ref="File_Config1" path="C:\Users\manid\OneDrive\Desktop\example\exp-1.txt"/>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="0d715ffb-cc1f-4e72-8738-a26cae0b3724" message="done"/>
+			</batch:on-complete>
+		</batch:job>
+		<ee:transform doc:name="Transform Message" doc:id="eb0deb13-22b6-4bde-8de8-ed813f938334">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status" : "200",
+	"ouput" : "success"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+	</flow>
+</mule>
