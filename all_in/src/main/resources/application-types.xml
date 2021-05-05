@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="new" format="json">
+      <types:shape format="weave" example="examples/metadeta-1.json"><![CDATA[%dw 2.0
+
+type new = Array<{|  employeeid: String,   employeename: String,   role: String,   salary: String,   exp: String|}> {"example": "[{\\\"employeeid\\\":\\\"101\\\",\\\"employeename\\\":\\\"mani\\\",\\\"role\\\":\\\"sr dev\\\",\\\"salary\\\":\\\"30L\\\",\\\"exp\\\":\\\"3\\\"},{\\\"employeeid\\\":\\\"102\\\",\\\"employeename\\\":\\\"deep\\\",\\\"role\\\":\\\"dev\\\",\\\"salary\\\":\\\"15L\\\",\\\"exp\\\":\\\"2\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+</types:mule>

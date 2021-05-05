@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7d7b9e25-01ad-4e03-930e-af034eb6a103" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="fad3fdce-11cc-41cd-9050-0931c9a235b7" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="MUle@123" database="new" />
+	</db:config>
+	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="87def467-d49a-4bd0-9991-1eb0ef547028" >
+		<sftp:connection host="192.168.1.114" username="tester" password="password" />
+	</sftp:config>
+	<sftp:config name="SFTP_Config1" doc:name="SFTP Config" doc:id="07d68f69-691c-4f3b-844e-29204d4e496c" >
+		<sftp:connection host="192.168.1.110" username="tester" password="password" />
+	</sftp:config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="7e823ecb-2a60-436d-bfb9-2232e042ac59" />
+	<file:config name="File_Config1" doc:name="File Config" doc:id="9c1bac36-4976-481d-a41e-7a54638c5041" />
+	<file:config name="File_Config2" doc:name="File Config" doc:id="7c4482f4-7f45-4927-897e-0d1f63d0a078" >
+		<file:connection workingDir="C:\Users\manid\OneDrive\Desktop\example\batch job output" />
+	</file:config>
+	<file:config name="File_Config3" doc:name="File Config" doc:id="579ba529-f876-4240-ac3d-d5c2575727da" />
+	<file:config name="File_Config4" doc:name="File Config" doc:id="0d888015-2b7d-4e9a-b24b-62c582d06e11" >
+		<file:connection workingDir="C:\Users\manid\OneDrive\Desktop\example\batch job output" />
+	</file:config>
+	<file:config name="File_Config5" doc:name="File Config" doc:id="238d7372-19ca-4f0e-8b91-e070ea72ed02" >
+		<file:connection workingDir="C:\Users\manid\OneDrive\Desktop\example\batch job output" />
+	</file:config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="41635832-1bad-4ce3-ac6f-d02be8ad440e" >
+		<email:smtp-connection host="smtp.gmail.com" port="587">
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="49a50065-a2ae-43a3-b2f5-3127520d4789" >
+		<jms:active-mq-connection >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61614" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<jms:config name="JMS_Config1" doc:name="JMS Config" doc:id="95d3678f-f056-4a4d-86d7-cac67cd6cd0a" >
+		<jms:active-mq-connection >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="all_inFlow" doc:id="5ae7d742-46f3-46fa-abcd-2e6672596276" >
+		<http:listener doc:name="Listener" doc:id="d7fc0909-9ddf-4baa-b7b2-63a836955a0a" config-ref="HTTP_Listener_config" path="hello"/>
+		<logger level="INFO" doc:name="Logger" doc:id="26d76199-d85c-4648-bc8c-1155a32359c4" message="#[payload]"/>
+		<jms:publish doc:name="Publish" doc:id="62386b3b-6613-4146-a839-068c95d35319" config-ref="JMS_Config1" destination="HELLO" destinationType="TOPIC" persistentDelivery="true">
+			<jms:message >
+				<jms:reply-to destination="manideep" destinationType="TOPIC" />
+			</jms:message>
+		</jms:publish>
+		<logger level="INFO" doc:name="Logger" doc:id="708b8893-10ec-4d25-89a2-db72dbad5f15" message="#[payload]"/>
+	</flow>
+	<flow name="all_inFlow1" doc:id="6888de37-5adc-4c11-96df-9c645c7b1da7" >
+		<jms:listener doc:name="On New Message" doc:id="4ce097f8-899b-4565-b42f-7b388ffdad05" config-ref="JMS_Config1" destination="HELLO" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer subscriptionName="Manideep" />
+			</jms:consumer-type>
+			<jms:response persistentDelivery="true" />
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="7ea459d2-e35c-443b-ac48-195dc747b307" message="#[payload]"/>
+	</flow>
+</mule>

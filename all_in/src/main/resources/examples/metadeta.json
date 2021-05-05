@@ -1,0 +1,16 @@
+[
+    {
+        "employeeid": "101",
+        "employeename": "mani",
+        "role": "sr dev",
+        "salary": "30L",
+        "exp": "3"
+    },
+    {
+        "employeeid": "102",
+        "employeename": "deep",
+        "role": "dev",
+        "salary": "15L",
+        "exp": "2"
+    }
+]
